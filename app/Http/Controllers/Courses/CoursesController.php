@@ -13,7 +13,7 @@ class CoursesController extends Controller
     public function index()
     {
         try {
-            $courses = Courses::all();
+            $courses = Courses::with('coordinator')->get();
             return response()->json(['courses' => $courses], 200);
         } catch (\Exception $e) {
             return response()->json(['Error' => true, 'message' => $e->getMessage()]);
@@ -26,8 +26,7 @@ class CoursesController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string',
-                'coordinator_name' => 'required|string',
-                'coordinator_email' => 'required|email',
+                'coordinator_id' => 'required|integer',
             ]);
 
             if ($validator->fails())
@@ -37,8 +36,7 @@ class CoursesController extends Controller
 
             $course = Courses::create([
                 'name' => $request->name,
-                'coordinator_name' => $request->coordinator_name,
-                'coordinator_email' => $request->coordinator_email,
+                'coordinator_id' => $request->coordinator_id,
             ]);
 
             return response()->json(['course' => $course], 200); 
@@ -65,8 +63,7 @@ class CoursesController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string',
-                'coordinator_name' => 'required|string',
-                'coordinator_email' => 'required|email',
+                'coordinator_id' => 'required|integer',
             ]);
 
             if ($validator->fails())
@@ -76,8 +73,7 @@ class CoursesController extends Controller
 
             $course = Courses::find($id);
             $course->name = $request->name;
-            $course->coordinator_name = $request->coordinator_name;
-            $course->coordinator_email = $request->coordinator_email;
+            $course->coordinator_id = $request->coordinator_id;
             $course->save();
 
             return response()->json(['course' => $course], 200);

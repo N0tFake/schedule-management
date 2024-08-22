@@ -12,9 +12,13 @@ class Courses extends Model
 
     protected $fillable = [
         'name',
-        'coordinator_name',
-        'coordinator_email',
+        'coordinator_id'
     ];
+
+    public function coordinator()
+    {
+        return $this->belongsTo(User::class, 'coordinator_id');
+    }
 
     public function disciplines()
     {
